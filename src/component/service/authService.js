@@ -6,12 +6,16 @@ const registerNewUser = (formData) => {
   });
 };
 
-const logoutUser = () => {
-  return customizeAxios.post("/api/v1/logout");
+const logoutUserService = () => {
+  return customizeAxios.post("/api/logout");
 };
 
 const check_ssoToken = (ssoToken) => {
   return customizeAxios.post("/api/verify-token",{ssoToken});
 };
 
-export { registerNewUser, logoutUser, check_ssoToken };
+const doGetAccountService = () => {
+  return customizeAxios.get("/api/account");
+};
+
+export { registerNewUser, logoutUserService, check_ssoToken,doGetAccountService };

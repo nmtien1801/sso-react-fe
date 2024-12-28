@@ -1,9 +1,12 @@
 import React, { useEffect, useState, useRef } from "react";
-import { check_ssoToken } from "../service/authService";
 import { useNavigate } from "react-router-dom";
+import { verify_ssoToken } from "../redux/authSlice";
+import { useSelector, useDispatch } from "react-redux";
 
 const Code = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const isLogin = useSelector((state) => state.auth.isLogin);
   const hasEffectRun = useRef(false); // strictMode chạy 2 lần -> useEffect chạy 2 lần
   const [message, setMessage] = useState("");
 
@@ -15,25 +18,21 @@ const Code = () => {
 
       // Bạn có thể sử dụng `ssoToken` tại đây
       if (ssoToken) {
-        check_ssoToken(ssoToken)
-          .then((res) => {
-            if (res && res.EC === 0) {
-              console.log(res.DT);
-              setMessage("Login success");
-              navigate("/")
-            } else {
-              setMessage(res.EM || "Something went wrong");
-            }
-          })
-          .catch((error) => {
-            console.error("Error:", error);
-            setMessage("An error occurred during login");
-          });
+        dispatch(verify_ssoToken(ssoToken));
       }
       // Logic here...
       hasEffectRun.current = true;
     }
   }, []);
+
+  useEffect(() => {
+    if (isLogin) {
+      setMessage("Login success");
+      navigate("/");
+    } else {
+      setMessage("Something went wrong");
+    }
+  }, [isLogin]);
 
   return (
     <div className="container">
@@ -44,7 +43,7 @@ const Code = () => {
             <span>
               . Please do login again. Click here to{" "}
               <a
-                href={`${process.env.REACT_APP_BACKEND_SSO}?serviceURL=${process.env.REACT_APP_SERVICE_URL}`}
+                href={`${process.env.REACT_APP_BACKEND_SSO_LOGIN}?serviceURL=${process.env.REACT_APP_SERVICE_URL}`}
               >
                 Login
               </a>
