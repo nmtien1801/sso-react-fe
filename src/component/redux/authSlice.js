@@ -7,8 +7,8 @@ import {
 import { useNavigate } from "react-router-dom";
 
 const initialState = {
-  user_Info: {},
-  isLogin: false, // Kiểm tra xem người dùng đã đăng nhập chưa
+  userInfo: {},
+  isLoggedIn: false, // Kiểm tra xem người dùng đã đăng nhập chưa
 };
 
 export const verify_ssoToken = createAsyncThunk(
@@ -40,15 +40,20 @@ const authSlice = createSlice({
   initialState,
 
   extraReducers: (builder) => {
-    // login user
+    // verify_ssoToken
     builder
       .addCase(verify_ssoToken.pending, (state) => {})
       .addCase(verify_ssoToken.fulfilled, (state, action) => {
         if (action.payload.EC === 0) {
-          state.user_Info = action.payload.DT || {};
-          state.isLogin = true;
+          state.userInfo = action.payload.DT || {};
+          state.isLoggedIn = true;
+          localStorage.setItem("access_Token", action.payload.DT.access_Token);
+          localStorage.setItem(
+            "refresh_Token",
+            action.payload.DT.refresh_Token
+          );
         } else {
-          state.isLogin = false;
+          state.isLoggedIn = false;
         }
       })
       .addCase(verify_ssoToken.rejected, (state, action) => {});
@@ -57,7 +62,10 @@ const authSlice = createSlice({
     builder
       .addCase(doGetAccount.pending, (state) => {})
       .addCase(doGetAccount.fulfilled, (state, action) => {
-        state.user_Info = action.payload.DT || {};
+        if (action.payload.EC === 0) {
+          state.userInfo = action.payload.DT || {};
+          state.isLoggedIn = true;
+        }
       })
       .addCase(doGetAccount.rejected, (state, action) => {});
 
@@ -65,12 +73,12 @@ const authSlice = createSlice({
     builder
       .addCase(logoutUser.pending, (state) => {})
       .addCase(logoutUser.fulfilled, (state, action) => {
-        state.user_Info = {};
-        state.isLogin = false;
-        console.log("action.payload.EC: ", action.payload);
-
-        // if (action.payload.EC === 0)
-        //   window.location.href = `${process.env.REACT_APP_BACKEND_SSO_LOGIN}/login?serviceURL=${process.env.REACT_APP_SERVICE_URL}`;
+        if (action.payload.EC === 0) {
+          state.userInfo = {};
+          state.isLoggedIn = false;
+          localStorage.removeItem("access_Token");
+          localStorage.removeItem("refresh_Token");
+        }
       })
       .addCase(logoutUser.rejected, (state, action) => {});
   },

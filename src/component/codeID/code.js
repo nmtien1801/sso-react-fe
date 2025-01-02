@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 const Code = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const isLogin = useSelector((state) => state.auth.isLogin);
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const hasEffectRun = useRef(false); // strictMode chạy 2 lần -> useEffect chạy 2 lần
   const [message, setMessage] = useState("");
 
@@ -26,13 +26,13 @@ const Code = () => {
   }, []);
 
   useEffect(() => {
-    if (isLogin) {
+    if (isLoggedIn) {
       setMessage("Login success");
       navigate("/");
     } else {
       setMessage("Something went wrong");
     }
-  }, [isLogin]);
+  }, [isLoggedIn]);
 
   return (
     <div className="container">

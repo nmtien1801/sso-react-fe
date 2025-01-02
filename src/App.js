@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import Register from "./component/page/auth/Register";
 import Header from "./component/route/Header";
 import Code from "./component/codeID/code";
@@ -8,12 +13,13 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { useSelector, useDispatch } from "react-redux";
 import { doGetAccount } from "./component/redux/authSlice";
 import { ThreeDots } from "react-loader-spinner";
+import User from "./component/page/user/user";
 
 function App() {
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.auth.user_Info);
+  const user = useSelector((state) => state.auth.userInfo);
   const [loading, setLoading] = useState(true); // loading khi verify ssoToken
-  const isLogin = useSelector((state) => state.auth.isLogin);
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
 
   const fetchDataAccount = async () => {
     if (!user || !user?.access_Token) {
@@ -38,13 +44,19 @@ function App() {
     );
   }
 
+  console.log("user", user);
+
   return (
     <Router>
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/register" element={<Register />} />
         <Route path="/code" element={<Code />} />
+        <Route path="/register" element={<Register />} />
+        <Route
+          path="/user"
+          element={isLoggedIn ? <User /> : <Navigate to="/" />}
+        />
       </Routes>
     </Router>
   );

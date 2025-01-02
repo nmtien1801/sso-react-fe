@@ -1,5 +1,6 @@
 import axios from "axios";
 import { toast } from "react-toastify";
+import axiosRetry from "axios-retry";
 //SEARCH: axios npm github
 
 // Set config defaults when creating the instance
@@ -9,16 +10,28 @@ const instance = axios.create({
   withCredentials: true, // để FE có thể nhận cookie từ BE
 });
 
+// Cấu hình retry -> khi sử dụng refresh token
+axiosRetry(instance, {
+  retries: 3, // Số lần retry tối đa
+  retryDelay: (retryCount) => {
+    console.log(`Retry attempt: ${retryCount}`);
+    return retryCount * 100; // Thời gian delay giữa các lần retry (ms)
+  },
+  retryCondition: (error) => {
+    // Điều kiện để thực hiện retry -> retry refresh token khi bất đồng bộ
+    return error.response?.status === 400; // Retry nếu lỗi là 400
+  },
+});
+
 // Alter defaults after instance has been created
 //Search: what is brearer token
 instance.defaults.headers.common[
   "Authorization"
-] = `Bearer ${localStorage.getItem("JWT")}`;
+] = `Bearer ${localStorage.getItem("access_Token")}`; // sửa localStore or cookie
 
 // Add a request interceptor
 instance.interceptors.request.use(
   function (config) {
-    // Do something before request is sent
     return config;
   },
   function (error) {

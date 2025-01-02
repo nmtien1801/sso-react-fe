@@ -8,7 +8,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { logoutUser } from "../redux/authSlice";
 
 const Header = () => {
-  const user = useSelector((state) => state.auth.user_Info);
+  const user = useSelector((state) => state.auth.userInfo);
   const dispatch = useDispatch();
 
   const handleLogin = () => {
