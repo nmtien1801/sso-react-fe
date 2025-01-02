@@ -1,4 +1,4 @@
-import React , {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
@@ -33,8 +33,14 @@ const Header = () => {
         {/* Phần nội dung menu */}
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto d-flex align-items-center">
+            <Nav.Link as={NavLink} to="/user" className="fw-normal">
+              about
+            </Nav.Link>
+            <Nav.Link as={NavLink} to="/register" className="fw-normal">
+              Register
+            </Nav.Link>
             {user && user?.access_Token && (
-              <Nav.Link href="/" className="fw-normal">
+              <Nav.Link as={NavLink} to="/" className="fw-normal">
                 Welcome {user.userName}
               </Nav.Link>
             )}
