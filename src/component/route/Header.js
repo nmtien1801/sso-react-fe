@@ -51,6 +51,13 @@ const Header = () => {
               id="basic-nav-dropdown"
               align="end" // Canh dropdown sang bên phải
             >
+              <NavDropdown.Item as={NavLink} to="/path">
+                Manage Path
+              </NavDropdown.Item>
+              <NavDropdown.Item as={NavLink} to="/role">
+                Authentication Role
+              </NavDropdown.Item>
+
               {user && user?.access_Token ? (
                 <NavDropdown.Item onClick={handleLogout}>
                   Logout

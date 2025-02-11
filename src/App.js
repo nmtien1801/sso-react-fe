@@ -14,6 +14,11 @@ import { useSelector, useDispatch } from "react-redux";
 import { doGetAccount } from "./component/redux/authSlice";
 import { ThreeDots } from "react-loader-spinner";
 import User from "./component/page/user/user";
+import Path from "./component/page/manageRole/path";
+import Role_authentication from "./component/page/manageRole/role_authentication";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import 'font-awesome/css/font-awesome.min.css';
 
 function App() {
   const dispatch = useDispatch();
@@ -57,7 +62,28 @@ function App() {
           path="/user"
           element={isLoggedIn ? <User /> : <Navigate to="/" />}
         />
+        <Route
+          path="/path"
+          element={isLoggedIn ? <Path /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/role"
+          element={isLoggedIn ? <Role_authentication /> : <Navigate to="/" />}
+        />
       </Routes>
+
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </Router>
   );
 }
